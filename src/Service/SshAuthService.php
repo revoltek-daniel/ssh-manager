@@ -53,7 +53,7 @@ class SshAuthService
     /**
      * @param User $user
      */
-    public function update(User $user: void
+    public function update(User $user): void
     {
         foreach ($user->getServers() as $server) {
             $this->removeAuth($server, $user->getUsername());
