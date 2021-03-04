@@ -34,3 +34,22 @@ services:
         arguments:
             $privateSshKey: '%env(PRIVATE_SSH_KEY)%'
             $publicSshKey: '%env(PUBLIC_SSH_KEY)%'
+
+    App\EventListener\SshKeyListener:
+        tags:
+            -
+                name: 'doctrine.orm.entity_listener'
+                event: 'postUpdate'
+                entity: 'App\Entity\SshKey'
+            -
+                name: 'doctrine.orm.entity_listener'
+                event: 'preUpdate'
+                entity: 'App\Entity\SshKey'
+            -
+                name: 'doctrine.orm.entity_listener'
+                event: 'postRemove'
+                entity: 'App\Entity\SshKey'
+            -
+                name: 'doctrine.orm.entity_listener'
+                event: 'postPersist'
+                entity: 'App\Entity\SshKey'

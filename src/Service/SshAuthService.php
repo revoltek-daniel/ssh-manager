@@ -3,10 +3,14 @@
 namespace App\Service;
 
 use App\Entity\Server;
+use App\Entity\SshKey;
 use App\Entity\User;
 
 class SshAuthService
 {
+    protected const KEY_BEGIN = '### START Key %s';
+    protected const KEY_END = '### END Key %s';
+
     /**
      * @var string
      */
@@ -32,30 +36,50 @@ class SshAuthService
         $this->publicSshKey = $publicSshKey;
     }
 
-    public function create(User $user)
+    /**
+     * @param User $user
+     */
+    public function create(User $user):void
     {
         foreach ($user->getServers() as $server) {
             foreach ($user->getSshKeys() as $sshKey) {
                 if ($sshKey->isActive()) {
-                    $this->createAuth($server, $user->getUsername(), $sshKey->getPublicKey());
+                    $this->createAuth($server, $user->getUsername(), $sshKey);
                 }
             }
         }
     }
 
-    public function update(User $user)
+    /**
+     * @param User $user
+     */
+    public function update(User $user: void
     {
-
+        foreach ($user->getServers() as $server) {
+            $this->removeAuth($server, $user->getUsername());
+            foreach ($user->getSshKeys() as $sshKey) {
+                if ($sshKey->isActive()) {
+                    $this->createAuth($server, $user->getUsername(), $sshKey);
+                }
+            }
+        }
     }
 
-    public function remove(User $user)
+    /**
+     * @param User $user
+     */
+    public function remove(User $user): void
     {
         foreach ($user->getServers() as $server) {
             $this->removeAuth($server, $user->getUsername());
         }
     }
 
-    protected function removeAuth(Server $server, string $username)
+    /**
+     * @param Server $server
+     * @param string $username
+     */
+    protected function removeAuth(Server $server, string $username): void
     {
         $this->connect($server);
 
@@ -64,17 +88,25 @@ class SshAuthService
         $this->disconnect();
     }
 
-    protected function createAuth(Server $server, string $username, string $key)
+    /**
+     * @param Server $server
+     * @param string $username
+     * @param SshKey $key
+     */
+    protected function createAuth(Server $server, string $username, SshKey $key): void
     {
         $this->connect($server);
 
-        $this->exec('echo "### START Key ' . $username . '" >> ~/.ssh/authorized_keys');
-        $this->exec('echo "' . $key . '" >> ~/.ssh/authorized_keys');
-        $this->exec('echo "### END Key ' . $username . '" >> ~/.ssh/authorized_keys');
+        $this->exec(\sprintf('echo "' . self::KEY_BEGIN . '" >> ~/.ssh/authorized_keys', $username, $key->getName()));
+        $this->exec('echo "' . $key->getPublicKey() . '" >> ~/.ssh/authorized_keys');
+        $this->exec(\sprintf('echo "' . self::KEY_END . '" >> ~/.ssh/authorized_keys', $username));
 
         $this->disconnect();
     }
 
+    /**
+     * @param Server $server
+     */
     protected function connect(Server $server): void
     {
         $this->connection = \ssh2_connect($server->getHostname(), $server->getPort());
@@ -87,6 +119,10 @@ class SshAuthService
         }
     }
 
+    /**
+     * @param string $cmd
+     * @return string
+     */
     protected function exec(string $cmd): string
     {
         if (!($stream = \ssh2_exec($this->connection, $cmd))) {
@@ -101,7 +137,11 @@ class SshAuthService
         return $data;
     }
 
-    protected function disconnect() {
+    /**
+     * @return void
+     */
+    protected function disconnect(): void
+    {
         $this->exec('echo "EXITING" && exit;');
         $this->connection = null;
     }
