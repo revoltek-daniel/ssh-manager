@@ -18,18 +18,32 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserCrudController extends AbstractCrudController
 {
+    /**
+     * @var UserPasswordEncoderInterface
+     */
     private UserPasswordEncoderInterface $encoder;
 
-    public function __construct(UserPasswordEncoderInterface $encoder, )
+    /**
+     * UserCrudController constructor.
+     * @param UserPasswordEncoderInterface $encoder
+     */
+    public function __construct(UserPasswordEncoderInterface $encoder)
     {
         $this->encoder = $encoder;
     }
 
+    /**
+     * @return string
+     */
     public static function getEntityFqcn(): string
     {
         return User::class;
     }
 
+    /**
+     * @param string $pageName
+     * @return iterable
+     */
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -47,6 +61,10 @@ class UserCrudController extends AbstractCrudController
         ];
     }
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param User $entityInstance
+     */
     public function persistEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         $encodedPassword = $this->encoder->encodePassword($entityInstance, $entityInstance->getPlainPassword());
@@ -57,6 +75,10 @@ class UserCrudController extends AbstractCrudController
 
     }
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param User $entityInstance
+     */
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         if ($entityInstance->getPlainPassword()) {
@@ -67,13 +89,19 @@ class UserCrudController extends AbstractCrudController
         parent::updateEntity($entityManager, $entityInstance);
     }
 
+    /**
+     * @param EntityManagerInterface $entityManager
+     * @param $entityInstance
+     */
     public function deleteEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
         parent::deleteEntity($entityManager, $entityInstance);
-
-
     }
 
+    /**
+     * @param Actions $actions
+     * @return Actions
+     */
     public function configureActions(Actions $actions): Actions
     {
         $actions = parent::configureActions($actions);
