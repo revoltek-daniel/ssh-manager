@@ -39,7 +39,7 @@ class SshAuthService
     /**
      * @param User $user
      */
-    public function create(User $user):void
+    public function create(User $user): void
     {
         foreach ($user->getServers() as $server) {
             foreach ($user->getSshKeys() as $sshKey) {
@@ -114,7 +114,7 @@ class SshAuthService
             throw new \RuntimeException('Cannot connect to server');
         }
 
-        if (!\ssh2_auth_pubkey_file($this->connection, $server->getUsername(), $this->publicSshKey , $this->privateSshKey)) {
+        if (!\ssh2_auth_pubkey_file($this->connection, $server->getUsername(), $this->publicSshKey, $this->privateSshKey)) {
             throw new \RuntimeException('Autentication rejected by server');
         }
     }
