@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Server;
 use App\Entity\SshKey;
 use App\Entity\User;
 use App\Form\SshKeyFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -104,6 +106,52 @@ class ProfileController extends AbstractController
             'profile/editKey.html.twig',
             [
                 'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * @Route("/server/assign/{serverId}", name="serverAssign")
+     */
+    public function assignServer(int $serverId): JsonResponse
+    {
+        $return = ['success' => $serverId];
+
+        return $this->json($return);
+    }
+
+    /**
+     * @Route("/server/remove/{serverId}", name="serverRemove")
+     */
+    public function removeServer(int $serverId): JsonResponse
+    {
+        $return = ['success' => $serverId];
+
+        return $this->json($return);
+    }
+
+    /**
+     * @Route("/servers", name="servers")
+     */
+    public function listServers(): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $assignedServers = $user->getServers();
+        $assignedServersIds = [];
+        foreach ($assignedServers as $assignedServer) {
+            $assignedServersIds[] = $assignedServer->getId();
+        }
+
+
+        $allServers = $this->getDoctrine()->getRepository(Server::class)->findAll();
+
+        return $this->render(
+            'profile/listServers.html.twig',
+            [
+                'servers' => $allServers,
+                'assignedServers' => $assignedServers,
+                'assignedServerIds' => $assignedServersIds,
             ]
         );
     }
