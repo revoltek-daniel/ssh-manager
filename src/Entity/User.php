@@ -53,6 +53,7 @@ class User implements UserInterface
     /**
      * @ORM\ManyToMany(targetEntity=Server::class, mappedBy="users")
      * @ORM\JoinTable(name="server_user")
+     * @var Collection|Server[]
      */
     private $servers;
 
@@ -63,6 +64,7 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity=SshKey::class, mappedBy="user", cascade="persist")
+     * @var Collection|SshKey[]
      */
     private $sshKeys;
 

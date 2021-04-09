@@ -71,8 +71,6 @@ class UserCrudController extends AbstractCrudController
         $entityInstance->setPassword($encodedPassword);
 
         parent::persistEntity($entityManager, $entityInstance);
-
-
     }
 
     /**

@@ -32,17 +32,12 @@ class SshKey
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="sshKeys")
      */
-    private $user;
+    private ?User $user;
 
     /**
      * @ORM\Column(type="boolean")
      */
     private bool $active = false;
-
-    public function __construct()
-    {
-        $this->user = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -106,5 +101,4 @@ class SshKey
 
         return $this;
     }
-
 }

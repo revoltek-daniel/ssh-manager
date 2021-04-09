@@ -28,7 +28,9 @@ class SshAuthService
 
     /**
      * SshAuthService constructor.
+     *
      * @param string $privateSshKey
+     * @param string $publicSshKey
      */
     public function __construct(string $privateSshKey, string $publicSshKey)
     {
