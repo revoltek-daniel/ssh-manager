@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+    <h1>Hello {{ app.user.username }} ✅</h1>
+
+    <a href="{{ path('profile_addKey') }}">Neuen key hinzufügen</a><br/>
+    <a href="{{ path('profile_editKey') }}">Key bearbeiten</a>
+</div>
+{% endblock %}
