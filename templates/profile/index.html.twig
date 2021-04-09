@@ -3,6 +3,14 @@
 {% block title %}Profile{% endblock %}
 
 {% block body %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
 <div class="content-wrapper">
     <h1>Hello {{ app.user.username }} ✅</h1>
 
