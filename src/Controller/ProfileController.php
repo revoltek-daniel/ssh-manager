@@ -42,6 +42,13 @@ class ProfileController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var User $user */
             $user = $this->getUser();
+
+            $keys = $user->getSshKeys();
+            foreach ($keys as $sshKey) {
+                $sshKey->setActive(false);
+            }
+            $user->setSshKeys($keys);
+
             $user->addSshKey($key);
 
             $entityManager = $this->getDoctrine()->getManager();

@@ -206,6 +206,13 @@ class User implements UserInterface
         $this->plainPassword = $password;
     }
 
+    public function setSshKeys(Collection $sshKeys): self
+    {
+        $this->sshKeys = $sshKeys;
+
+        return $this;
+    }
+
     /**
      * @return Collection|SshKey[]
      */
