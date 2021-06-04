@@ -3,17 +3,19 @@
 {% block title %}Zugewiesene Server{% endblock %}
 
 {% block body %}
-    <div class="content-wrapper" data-controller="serverlist">
-
-
+    <div class="content-wrapper" id="serverlist"
+         data-remove-url="{{ path('profile_serverRemove', {'serverId': '-placeholder'} ) }}"
+         data-assign-url="{{ path('profile_serverAssign', {'serverId': '-placeholder'} ) }}"
+    >
         {% for server in servers %}
-            {{ server.name }}
-            {% if server.id in assignedServerIds %}
-                <a href="{{ path('profile_serverRemove', {'serverId': server.id} ) }}" class="js-click">entfernen</a>
-            {% else %}
-                <a href="{{ path('profile_serverAssign', {'serverId': server.id} ) }}" class="js-click">zuweisen</a>
-            {% endif %}
-
+            <div data-controller="server">
+                {{ server.name }}
+                {% if server.id in assignedServerIds %}
+                    <a href="#" data-serverid="{{ server.id }}" data-type="remove" data-server-target="link" data-action="server#handleClick">entfernen</a>
+                {% else %}
+                    <a href="#" data-serverid="{{ server.id }}" data-type="assign" data-server-target="link" data-action="server#handleClick">zuweisen</a>
+                {% endif %}
+            </div>
             <br/>
         {% endfor %}
     </div>

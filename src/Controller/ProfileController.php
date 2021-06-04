@@ -115,7 +115,7 @@ class ProfileController extends AbstractController
      */
     public function assignServer(int $serverId): JsonResponse
     {
-        $return = ['success' => $serverId];
+        $return = ['success' => $serverId, 'text' => 'entfernen'];
 
         return $this->json($return);
     }
@@ -125,7 +125,7 @@ class ProfileController extends AbstractController
      */
     public function removeServer(int $serverId): JsonResponse
     {
-        $return = ['success' => $serverId];
+        $return = ['success' => $serverId, 'text' => 'zuweisen'];
 
         return $this->json($return);
     }
